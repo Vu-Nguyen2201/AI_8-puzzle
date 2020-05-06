@@ -3,7 +3,7 @@
 #Lớp: Trí tuệ nhân tạo sáng thứ 3
 #Giảng viên hướng dẫn: Trần Nhật Quang
 #Nội dung bài tập: Tuần 06
-
+#Đã sao lưu trên git: https://github.com/Vu-Nguyen2201/AI_8-puzzle
 import numpy as np
 import itertools
 from copy import deepcopy
