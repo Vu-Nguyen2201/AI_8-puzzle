@@ -3,7 +3,7 @@ import itertools
 from copy import deepcopy
 
 
-
+count = 0
 class Node:
     state = None
     parent = None
@@ -44,11 +44,6 @@ class Problem:
         return node
 
     def goal_test(self, node):
-        # for i in range(3):
-        #     for j in range(3):
-        #         if self.goal[i][j] != node.state[i][j]:
-        #             return 0
-        # return 1
         check = node.state == self.goal
         if False in check:
             return 0
@@ -105,6 +100,24 @@ def checkInFrontier(frontier, node):
             return 1
     return 0
 
+def changeIfPathCostLess(frontier, childNode):
+    lenFrontier = len(frontier)
+    for i in range(lenFrontier):
+        check = childNode.state == frontier[i].state
+        if check.all() == True:
+            if childNode.path_cost < frontier[i].path_cost:
+                frontier[i] = deepcopy(child_node)
+            break
+
+def solution(solved):
+    node = Node()
+    node = deepcopy(solved)
+    solutionAction = []
+
+    while node.parent != None:
+        solutionAction.insert(0,node.action)
+        node = node.parent
+    return solutionAction
 
 def UCS(problem):
     node = Node()
@@ -126,25 +139,23 @@ def UCS(problem):
             print("---------------------")
             print('node ',node.state)
         if(problem.goal_test(node) == 1):
-            return "Ra dap an"
+            return solution(node)
         else:
             explored.append(deepcopy(node.state))
 
         for action in problem.returnActionArray(node):
             childNode = deepcopy(child_node(problem, node, action))
-            # print(explored)
-            # print(childNode.state)
-            # print("Node: ",node.state)
-            # check state
             childInFrontier = checkInFrontier(frontier, node)
             childInExplored = checkInExplored(explored, childNode.state)
             print("---------------------")
             print(action)
             print('child',childNode.state)
+            print('childPathCost', childNode.path_cost)
             if childInFrontier == 0 and childInExplored == 0:  # error
                 frontier.append(deepcopy(childNode))
-            # elif childInFrontier == 1:
-            #     print(0)
+            elif childInFrontier == 1:
+                changeIfPathCostLess(frontier, childNode)
+
 
 
 problem = Problem()
