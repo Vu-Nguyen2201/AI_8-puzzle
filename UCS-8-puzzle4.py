@@ -1,3 +1,9 @@
+#Họ và Tên: Nguyễn Tuấn Vũ
+#MSSV: 18133064
+#Lớp: Trí tuệ nhân tạo sáng thứ 3
+#Giảng viên hướng dẫn: Trần Nhật Quang
+#Nội dung bài tập: Tuần 06
+
 import numpy as np
 import itertools
 from copy import deepcopy
