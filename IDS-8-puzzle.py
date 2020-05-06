@@ -4,6 +4,7 @@
 #Giảng viên hướng dẫn: Trần Nhật Quang
 #Nội dung bài tập: Tuần 06
 #Đã sao lưu trên git: https://github.com/Vu-Nguyen2201/AI_8-puzzle
+
 import numpy as np
 import itertools
 from copy import deepcopy
@@ -120,46 +121,40 @@ def solution(solved):
         solutionAction.insert(0,node.action)
         node = node.parent
     return solutionAction
+    
+def IDS(problem):
+    for depth in range(15):
+        result = DLS(problem, depth)
+        if result != 'Fail':
+            return result
 
-def UCS(problem):
-    node = Node()
-    node = deepcopy(problem.initial_state())
-    frontier = [node]
-    explored = []
-    while(1):
-        if len(frontier) <= 0:
-            return 0
-        else:
-            print(len(frontier))
-            min_path_cost = 1000000
-            indexPop = int()
-            for checkNode in frontier:
-                if(checkNode.path_cost < min_path_cost):
-                    indexPop = frontier.index(checkNode)
-                    min_path_cost = checkNode.path_cost
-            node = deepcopy(frontier.pop(indexPop))
-            print("---------------------")
-            print('node ',node.state)
-        if(problem.goal_test(node) == 1):
-            return solution(node)
-        else:
-            explored.append(deepcopy(node.state))
+def DLS(problem, limit):
+    result = recursive_DLS(deepcopy(problem.initial_state()),problem,limit) #solution, failure/cutoff
+    if result == 'cutoff' or result == 'failure':
+        return 'Fail'
+    else:
+        return result
 
+def recursive_DLS(node, problem, limit):
+    if problem.goal_test(node) == 1:
+        return solution(node)
+    elif limit == 0:
+        return 'cutoff'
+    else:
+        cutoff_occurred = False
         for action in problem.returnActionArray(node):
             childNode = deepcopy(child_node(problem, node, action))
-            childInFrontier = checkInFrontier(frontier, node)
-            childInExplored = checkInExplored(explored, childNode.state)
-            print("---------------------")
-            print(action)
-            print('child',childNode.state)
-            print('childPathCost', childNode.path_cost)
-            if childInFrontier == 0 and childInExplored == 0:  # error
-                frontier.append(deepcopy(childNode))
-            elif childInFrontier == 1:
-                changeIfPathCostLess(frontier, childNode)
-
+            result = recursive_DLS(childNode, problem, limit-1)
+            if result == 'cutoff':
+                cutoff_occurred = True
+            elif result != 'failure':
+                return result
+        if cutoff_occurred:
+            return 'cutoff'
+        else:
+            return 'failure'
 
 problem = Problem()
 node = Node()
 node = problem.initial_state()
-print(UCS(problem))
+print(IDS(problem))
