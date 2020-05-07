@@ -4,6 +4,9 @@
 #Giảng viên hướng dẫn: Trần Nhật Quang
 #Nội dung bài tập: Tuần 06
 #Đã sao lưu trên git: https://github.com/Vu-Nguyen2201/AI_8-puzzle
+#Tham khảo: 
+#[1] Stuart J. Russell and Peter Norvig. (2016). Artificial Intelligence A Modern Approach Third Edition
+#[2] Thầy Trần Nhật Quang (2020). Môn Trí tuệ nhân tạo - Video bài giảng tuần 06
 
 import numpy as np
 import itertools

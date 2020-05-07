@@ -4,6 +4,9 @@
 #Giảng viên hướng dẫn: Trần Nhật Quang
 #Nội dung bài tập: Tuần 06
 #Đã sao lưu trên git: https://github.com/Vu-Nguyen2201/AI_8-puzzle
+#Tham khảo: 
+#[1] Stuart J. Russell and Peter Norvig. (2016). Artificial Intelligence A Modern Approach Third Edition
+#[2] Thầy Trần Nhật Quang (2020). Môn Trí tuệ nhân tạo - Video bài giảng tuần 06
 
 import numpy as np
 import itertools
@@ -129,7 +132,7 @@ def UCS(problem):
         if len(frontier) <= 0:
             return 0
         else:
-            print(len(frontier))
+            # print(len(frontier))
             min_path_cost = 1000000
             indexPop = int()
             for checkNode in frontier:
@@ -137,8 +140,8 @@ def UCS(problem):
                     indexPop = frontier.index(checkNode)
                     min_path_cost = checkNode.path_cost
             node = deepcopy(frontier.pop(indexPop))
-            print("---------------------")
-            print('node ',node.state)
+            # print("---------------------")
+            # print('node ',node.state)
         if(problem.goal_test(node) == 1):
             return solution(node)
         else:
@@ -148,10 +151,10 @@ def UCS(problem):
             childNode = deepcopy(child_node(problem, node, action))
             childInFrontier = checkInFrontier(frontier, node)
             childInExplored = checkInExplored(explored, childNode.state)
-            print("---------------------")
-            print(action)
-            print('child',childNode.state)
-            print('childPathCost', childNode.path_cost)
+            # print("---------------------")
+            # print(action)
+            # print('child',childNode.state)
+            # print('childPathCost', childNode.path_cost)
             if childInFrontier == 0 and childInExplored == 0:  # error
                 frontier.append(deepcopy(childNode))
             elif childInFrontier == 1:
