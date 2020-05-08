@@ -89,32 +89,6 @@ def child_node(problem, parent, action):
     child.path_cost = parent.path_cost + problem.step_cost
     return child
 
-
-def checkInExplored(explored, nodeState):
-    lenExplored = len(explored)
-    for i in range(lenExplored):
-        check = nodeState == explored[i]
-        if check.all() == True:
-            return 1
-    return 0
-
-def checkInFrontier(frontier, node):
-    lenFrontier = len(frontier)
-    for i in range(lenFrontier):
-        check = node.state == frontier[i].state
-        if check.all() == True:
-            return 1
-    return 0
-
-def changeIfPathCostLess(frontier, childNode):
-    lenFrontier = len(frontier)
-    for i in range(lenFrontier):
-        check = childNode.state == frontier[i].state
-        if check.all() == True:
-            if childNode.path_cost < frontier[i].path_cost:
-                frontier[i] = deepcopy(child_node)
-            break
-
 def solution(solved):
     node = Node()
     node = deepcopy(solved)
