@@ -181,7 +181,5 @@ def Astar(problem):
                 changeIfCostEstimateLess(frontier, childNode)
 
 problem = Problem()
-node = Node()
-node = problem.initial_state()
 print(Astar(problem))
 print("--- %s seconds ---" % (time.time() - start_time))
