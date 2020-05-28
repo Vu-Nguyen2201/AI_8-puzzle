@@ -11,6 +11,9 @@
 import numpy as np
 import itertools
 from copy import deepcopy
+import time
+import math
+start_time = time.time()
 
 class Node:
     state = None
@@ -18,6 +21,7 @@ class Node:
     path_cost = None
     action = None
     heuristic = None
+    cost_estimate = None
 
 class Problem:
     col = {0: ['RIGHT'], 2: ['LEFT'], 1: ['LEFT', 'RIGHT']}
@@ -44,15 +48,23 @@ class Problem:
         action = list(itertools.chain.from_iterable(action))
         return action
 
-    def heuristic_9(self, node):
-        return (node.state == self.goal).sum()
+    def distance_heuristic(self, node):
+        cost_estimate = 0
+        for i in range(3):
+            for j in range(3):
+                indexGoal = np.where(self.goal == node.state[i][j])
+                rowindex = indexGoal[0].item()
+                colindex = indexGoal[1].item()
+                cost_estimate = cost_estimate + math.fabs(i - rowindex) + math.fabs(j - colindex)
+        return cost_estimate
 
     def initial_state(self):
         node = Node
         node.state = self.state
         node.action = self.returnActionArray(node)
         node.path_cost = 0
-        node.heuristic = self.heuristic_9(node)
+        node.heuristic = self.distance_heuristic(node)
+        node.cost_estimate = node.path_cost + node.heuristic
         return node
 
     def goal_test(self, node):
@@ -91,6 +103,8 @@ def child_node(problem, parent, action):
     child.action = action  # child chua action cua cha
     child.state = (problem.result(parent, action))
     child.path_cost = parent.path_cost + problem.step_cost
+    child.heuristic = problem.distance_heuristic(child)
+    child.cost_estimate = child.path_cost + child.heuristic
     return child
 
 def checkInExplored(explored, nodeState):
@@ -109,20 +123,12 @@ def checkInFrontier(frontier, node):
             return 1
     return 0
 
-def changeIfPathCostLess(frontier, childNode):
+def changeIfCostEstimateLess(frontier, childNode):
     lenFrontier = len(frontier)
     for i in range(lenFrontier):
         check = childNode.state == frontier[i].state
         if check.all() == True:
-            if childNode.path_cost < frontier[i].path_cost:
-                frontier[i] = (child_node)
-            break
-def changeIfHeuristicLess(frontier, childNode):
-    lenFrontier = len(frontier)
-    for i in range(lenFrontier):
-        check = childNode.state == frontier[i].state
-        if check.all() == True:
-            if childNode.heuristic < frontier[i].heuristic:
+            if childNode.cost_estimate < frontier[i].cost_estimate:
                 frontier[i] = (child_node)
             break
 
@@ -136,7 +142,7 @@ def solution(solved):
         node = node.parent
     return solutionAction
 
-def UCS(problem):
+def Astar(problem):
     node = Node()
     node = (problem.initial_state())
     frontier = [node]
@@ -145,22 +151,13 @@ def UCS(problem):
         if len(frontier) <= 0:
             return 0
         else:
-            print(len(frontier))
-
-            # min_path_cost = 1000000
-            # indexPop = int()
-            # for checkNode in frontier:
-            #     if(checkNode.path_cost < min_path_cost):
-            #         indexPop = frontier.index(checkNode)
-            #         min_path_cost = checkNode.path_cost
-            # node = (frontier.pop(indexPop))
-
-            min_heuristic = 1000000
+            print('frontier len: ',len(frontier))
+            min_cost_estimate = 1000000
             indexPop = int()
             for checkNode in frontier:
-                if(checkNode.heuristic < min_heuristic):
+                if(checkNode.cost_estimate < min_cost_estimate):
                     indexPop = frontier.index(checkNode)
-                    min_heuristic = checkNode.heuristic
+                    min_cost_estimate = checkNode.cost_estimate
             node = (frontier.pop(indexPop))
             
             print("---------------------")
@@ -177,13 +174,14 @@ def UCS(problem):
             print("---------------------")
             print(action)
             print('child',childNode.state)
-            print('childPathCost', childNode.path_cost)
+            print('childCost_estimate', childNode.cost_estimate)
             if childInFrontier == 0 and childInExplored == 0:  # error
                 frontier.append((childNode))
             elif childInFrontier == 1:
-                changeIfHeuristicLess(frontier, childNode)
+                changeIfCostEstimateLess(frontier, childNode)
 
 problem = Problem()
 node = Node()
 node = problem.initial_state()
-print(UCS(problem))
+print(Astar(problem))
+print("--- %s seconds ---" % (time.time() - start_time))

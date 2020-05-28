@@ -32,7 +32,22 @@ import numpy as np
 #     print('yes')
 #check =  all(item in List1 for item in List2
 import numpy as np
-a = np.array([1, 1, 3, 3])
-b = np.array([1, 2, 4, 3])
+import math
+# a = np.array([1, 1, 3, 3])
+# b = np.array([1, 2, 4, 3])
 
-print((a == b).sum())
+# print((a == b).sum())
+state = np.array([[3, 1, 2],
+                      [6, '', 8],
+                      [7, 5, 4]])
+goal = np.array([['', 1, 2],
+                    [3, 4, 5],
+                    [6, 7, 8]])
+cost_estimate = 0
+for i in range(3):
+    for j in range(3):
+        indexGoal = np.where(goal == state[i][j])
+        rowindex = indexGoal[0].item()
+        colindex = indexGoal[1].item()
+        cost_estimate = cost_estimate + math.fabs(i - rowindex) + math.fabs(j - colindex)
+        print(cost_estimate)
