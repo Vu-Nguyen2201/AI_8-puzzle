@@ -17,6 +17,7 @@ class Node:
     parent = None
     path_cost = None
     action = None
+    heuristic = None
 
 class Problem:
     col = {0: ['RIGHT'], 2: ['LEFT'], 1: ['LEFT', 'RIGHT']}
@@ -43,11 +44,15 @@ class Problem:
         action = list(itertools.chain.from_iterable(action))
         return action
 
+    def heuristic_9(self, node):
+        return (node.state == self.goal).sum()
+
     def initial_state(self):
         node = Node
         node.state = self.state
         node.action = self.returnActionArray(node)
         node.path_cost = 0
+        node.heuristic = self.heuristic_9(node)
         return node
 
     def goal_test(self, node):
@@ -112,6 +117,14 @@ def changeIfPathCostLess(frontier, childNode):
             if childNode.path_cost < frontier[i].path_cost:
                 frontier[i] = (child_node)
             break
+def changeIfHeuristicLess(frontier, childNode):
+    lenFrontier = len(frontier)
+    for i in range(lenFrontier):
+        check = childNode.state == frontier[i].state
+        if check.all() == True:
+            if childNode.heuristic < frontier[i].heuristic:
+                frontier[i] = (child_node)
+            break
 
 def solution(solved):
     node = Node()
@@ -133,13 +146,23 @@ def UCS(problem):
             return 0
         else:
             print(len(frontier))
-            min_path_cost = 1000000
+
+            # min_path_cost = 1000000
+            # indexPop = int()
+            # for checkNode in frontier:
+            #     if(checkNode.path_cost < min_path_cost):
+            #         indexPop = frontier.index(checkNode)
+            #         min_path_cost = checkNode.path_cost
+            # node = (frontier.pop(indexPop))
+
+            min_heuristic = 1000000
             indexPop = int()
             for checkNode in frontier:
-                if(checkNode.path_cost < min_path_cost):
+                if(checkNode.heuristic < min_heuristic):
                     indexPop = frontier.index(checkNode)
-                    min_path_cost = checkNode.path_cost
+                    min_heuristic = checkNode.heuristic
             node = (frontier.pop(indexPop))
+            
             print("---------------------")
             print('node ',node.state)
         if(problem.goal_test(node) == 1):
@@ -158,7 +181,7 @@ def UCS(problem):
             if childInFrontier == 0 and childInExplored == 0:  # error
                 frontier.append((childNode))
             elif childInFrontier == 1:
-                changeIfPathCostLess(frontier, childNode)
+                changeIfHeuristicLess(frontier, childNode)
 
 problem = Problem()
 node = Node()
